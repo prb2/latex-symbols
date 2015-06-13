@@ -1,0 +1,4 @@
+tex ~message(Good Morning)
+latex ~message(Hello, world)
+
+-tsearch ~message(Hello ther)

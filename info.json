@@ -1,0 +1,9 @@
+{
+	"name" : "latex",
+	"displayName" : "LaTeX Symbol Search",
+	"description" : "Search for symbols and find their LaTeX commands",
+	"examples" : ["latex pi", "latex epsilon", "latex Sigma"],
+	"categories" : ["Search"],
+	"creator_name" : "Prudhvi",
+	"creator_url" : "test"
+}
