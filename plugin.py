@@ -1,87 +1,73 @@
-symbols = {"pi" : "\pi", "union" : "\cup"}
+from bs4 import BeautifulSoup
+import urllib2
+
 
 def appearance():
     import Foundation
     dark_mode = Foundation.NSUserDefaults.standardUserDefaults().persistentDomainForName_(Foundation.NSGlobalDomain).objectForKey_("AppleInterfaceStyle") == "Dark"
     return "dark" if dark_mode else "light"
 
-
-def generate_html(query, result):
+def generate_html(query):
+	url = "http://www.dfcd.net/projects/latex/latex.php?q=" + query
+	webpage = urllib2.urlopen(url)
+	soup = BeautifulSoup(webpage)
+	table = soup.findAll('table')[-1]
+	table = str(table).replace("./", "http://www.dfcd.net/projects/latex/")
+    
 	html = """
 		<html>
 			<head>
 				<style>
-					body {
+					* {
 						font-family: 'Helvetica Neue';
 						font-size: 16px;
 						font-weight: 200;
 						text-align: center;
-						-webkit-user-select: none;
 					}
-					.content {
+                    table {
+                        border: none;
+                        background-color: #fff;
+                        padding: 5px;
+                        width: 100%;
+                    }
+					td {
+                        border: none;
+                        padding: 5px;
 						-webkit-user-select: all;
 					}
-					h1, h3, h4 {
-						font-weight: 200;
-					}
-                    .tex-img {
-                        background-color: #fff;
-                        padding: 20px;
-                    }
+		
                     .dark {
                         color: #fff;
-                        padding: 20px
+						padding: 10px 20px;
                     }
                     .light {
                         color: #000;
-                        padding: 20px
+						padding: 10px 20px;
                     }
 				</style>
-                <script src="jquery.min.js"></script>
-                <script>
-                    function process_latex() {
-                            $('pre.latex').each(function(e) {
-                              var tex = $(this).text();
-                              var url = "http://chart.apis.google.com/chart?cht=tx&chs=50&chl=" + encodeURIComponent(tex);
-                              var cls = $(this).attr('class');
-                              var img = '<img src="' + url + '" alt="' + tex + '" class="' + cls + '"/>';
-                              $(img).insertBefore($(this));
-                              $(this).hide();
-                            });
-                          }
-                          $(document).ready(function() {process_latex();});
-                </script>
 			</head>
 			<body>
-    			
-                <div class="tex-img">
-                    <pre class="latex">
-                        {{symbol}}
-                    </pre>
-                </div>
     			<div class={{appearance}}>
-    				<h1 class="content">{{symbol}}</h1>
-    				<br>
-    				<h4>Click the command and use &#8984; + C to copy to clipboard.
-			    </div>
-            </body>
+                    <h4>Click a command, then &#8984; + C to copy</h4>
+                    {{table}}
+			   	</div>
+           	</body>
 	"""
 	html = html.replace("{{appearance}}", appearance())
-	html = html.replace("{{query}}", query)
-	html = html.replace("{{symbol}}", result)
+	html = html.replace("{{table}}", table)
 	return html
-    
+
+
+
 def results(fields, original_query):
 	query = fields['~message']
-	result = symbols[query]
 	return {
 		"title" : "LaTeX Symbol Finder",
-		"run_args" : [result],
-		"html" : generate_html(query, result),
+		"html" : generate_html(query),
 		"webview_transparent_background" : True
 	}
 
-def run(output):
+def run( output):
 	import os
 	os.system('printf "' + output + '" | pbcopy')
 

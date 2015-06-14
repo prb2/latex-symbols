@@ -2,8 +2,8 @@
 	"name" : "latex",
 	"displayName" : "LaTeX Symbol Search",
 	"description" : "Search for symbols and find their LaTeX commands",
-	"examples" : ["latex pi", "latex epsilon", "latex Sigma"],
-	"categories" : ["Search"],
-	"creator_name" : "Prudhvi",
-	"creator_url" : "test"
+	"examples" : ["tex pi", "tex arrow", "latex sum", "latex fraction"],
+	"categories" : ["Search", "Information", "Language", "Developer", "Utilities"],
+	"creator_name" : "Prudhvi Boyapalli",
+	"creator_url" : "http://www.prudhviboyapalli.com"
 }
